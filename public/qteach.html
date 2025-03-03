@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title> QTeach </title>
+        <link rel="stylesheet" href="/qteach-styles.css">
+        <link rel="icon" href="/qteach_icon.png" type="image/x-icon"/>
+        <script src="/qteach-script.js" defer></script>
+    </head>
+
+    <body>
+        <div class="h-centered-container">
+            <div id="qt-avatar" class="h-centered-container">
+                <div id="avatar-background"></div>
+                <img id="qt-face">
+                <img id="qt-upper-torso">
+                <img id="qt-skull">
+                <div id="avatar-border"></div>
+            </div>
+        </div>
+
+        <div class="h-centered-container"> 
+            <textarea id="chat-input" class="text-input-field" rows="1" placeholder="Talk to QT..." onkeypress="chatInputHandler(event);"></textarea>
+        </div>
+
+        <div class="h-centered-container">
+            <div id="chat-history"></div>
+        </div>
+    </body>
+</html>
