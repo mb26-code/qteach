@@ -42,4 +42,3 @@ Required for running this web application:
     
     A .env file containing your Gemini API key:
         GEMINI_API_KEY="(your key here)"
-
