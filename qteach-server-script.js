@@ -64,7 +64,7 @@ const app = express();
 app.use(express.static("public"));
 app.use(express.json())
 
-const appServerPort = process.env.PORT || 7777;
+const appServerPort = process.env.PORT || 8080;
 const pageAccessEndpoint = "/qteach";
 const pageURL = "http://localhost:" + appServerPort + pageAccessEndpoint;
 
