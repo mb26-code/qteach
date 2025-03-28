@@ -3,44 +3,52 @@ let chatInput = document.getElementById("chat-input");
 let chatHistory = document.getElementById("chat-history");
 
 let qtFace = document.getElementById("qt-face");
+//qtFace element (to change the emotion)
 
-qtSay("Hello, I'm QT! Let's test your arithmetic skills!");
+qtBe("neutral_blinking")
+qtSay("Hello, I'm QT!\nLet's test your math skills!");
+
+let problem = undefined;
+//the problem given by the server model
 
 let askingMode = true;
-let problem = undefined;
+//boolean controling whether QT is the one who gives problem or the one who solve problems
 
-qtAskProblem();
+qtGiveProblem();
 
 function qtSay(text) {
-    let botMessageRecord = document.createElement("div");
+    let messageRecord = document.createElement("div");
 
-    let botMessageRecordAuthor = document.createElement("span");
-    botMessageRecordAuthor.innerText = "QT: ";
-    botMessageRecord.appendChild(botMessageRecordAuthor);
+    let messageRecordAuthor = document.createElement("span");
+    messageRecordAuthor.innerText = "QT: ";
+    messageRecord.appendChild(messageRecordAuthor);
 
-    let botMessageRecordContent = document.createElement("p");
-    botMessageRecordContent.innerText = text;
-    botMessageRecord.appendChild(botMessageRecordContent);
+    let messageRecordContent = document.createElement("p");
+    messageRecordContent.innerText = text;
+    messageRecord.appendChild(messageRecordContent);
 
-    chatHistory.insertBefore(botMessageRecord,chatHistory.firstChild);
+    chatHistory.insertBefore(messageRecord,chatHistory.firstChild);
         
 }
 
-async function qtEmotion(emotion) {
+async function qtBe(emotion) {
     qtFace.style.content = "url(/qt_faces/" + emotion + ".gif)";
 }
 
-async function qtAskProblem() {
+async function qtGiveProblem() {
     try {
         const qtProblemResponse = await fetch("/qtProblem");
         const qtProblemResult = await qtProblemResponse.json();
         problem = qtProblemResult.problem;
-        qtEmotion("talking");
+
+        qtBe("talking");
         qtSay(problem);
-        setTimeout(() => qtEmotion("neutral_blinking"), 2000);
+        const talkingDuration = problem.length * 200;
+        setTimeout(() => qtBe("neutral_blinking"), talkingDuration);
 
     } catch(error) {
-        console.log(error);
+
+        console.error("Couldn't fetch a problem: " + error);
     }
 }
 
@@ -61,7 +69,7 @@ async function chatInputHandler(event) {
         userMessageRecordContent.innerText = userMessage;
         userMessageRecord.appendChild(userMessageRecordContent);
 
-        userMessageRecord.style.color = "rgb(160, 230, 30)";
+        userMessageRecord.style.color = "rgb(29, 80, 211)";
         chatHistory.insertBefore(userMessageRecord,chatHistory.firstChild);
         
         ///
@@ -73,18 +81,23 @@ async function chatInputHandler(event) {
                     body: JSON.stringify({ problem: problem, answer: userMessage })
                 });
                 const qtReactionResult = await qtReactionResponse.json();
-                qtEmotion(qtReactionResult.emotion);
+
+                if (qtReactionResult.correct) {
+                    userMessageRecord.style.color = "rgb(75, 187, 14)";
+                } else {
+                    userMessageRecord.style.color = "rgb(187, 23, 20)";
+                }
+                qtBe(qtReactionResult.emotion);
                 setTimeout(() => { 
-                    qtEmotion("talking");
+                    qtBe("talking");
                     qtSay(qtReactionResult.message);
                     setTimeout(() => { 
-                        qtEmotion("neutral_blinking");
-                        if (qtReactionResult.correct) {
-                            setTimeout(qtAskProblem, 2000);
+                        qtBe("neutral_blinking");
+                        if (qtReactionResult.correct || qtReactionResult.next) {
+                            setTimeout(qtGiveProblem, 1000);
                         }
                     }, qtReactionResult.message.length * 50);
-                }, 1500);
-                
+                }, 2000);
 
             } catch(error) {
                 console.log(error);
@@ -97,10 +110,11 @@ async function chatInputHandler(event) {
                 body: JSON.stringify({ problem: problem })
             });
             const qtSolveResult = await qtSolveResponse.json();
-            qtEmotion("talking");
+
+            qtBe("talking");
             qtSay(qtSolveResult.message);
-            setTimeout(() => qtEmotion(qtSolveResult.emotion), 2000);
-            setTimeout(() => qtEmotion("neutral_blinking"), 4000);
+            setTimeout(() => qtBe(qtSolveResult.emotion), 2000);
+            setTimeout(() => qtBe("neutral_blinking"), 4000);
         }
     }
 }

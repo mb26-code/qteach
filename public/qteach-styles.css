@@ -1,5 +1,5 @@
 body{
-    background-color: rgb(20, 110, 190);
+    background-color: rgb(32, 125, 206);
 }
 
 /*A container with horizontally centered components*/
@@ -84,7 +84,7 @@ body{
     color: rgb(255, 255, 255);
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     font-size: 1.2em;
-    background-color: rgb(100, 100, 100);
+    background-color: rgb(117, 116, 116);
     resize: none;
     width: 90%;
     aspect-ratio: 4;

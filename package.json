@@ -1,7 +1,7 @@
 {
   "name": "qteach",
-  "version": "1.0.0",
-  "description": "A small web application allowing 8-10 years old to train and learn arithmetic skills",
+  "version": "2.0.0",
+  "description": "A small web application allowing first graders to train and learn math skills",
   "main": "qteach-server-script.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -11,7 +11,7 @@
     "type": "git",
     "url": "git+https://github.com/mb26-code/qteach.git"
   },
-  "author": "Mehdi Bakhtar",
+  "author": "Mehdi Bakhtar, Alain Le, Oscar Jimenez-Flores",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/mb26-code/qteach/issues"

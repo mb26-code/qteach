@@ -1,134 +1,147 @@
 const express = require("express");
-const path = require("path");
-require('dotenv').config();
+//for creating a web app instance
 
-//console.log(process.env.GEMINI_API_KEY);
+const fs = require("fs");
+//for using file system operations
+
+const path = require("path");
+//for working with file directory paths
+
+require('dotenv').config();
+//for .env access
 
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+//for LLM AI agent feature
+
+//checking if .env is working properly
+//console.log("GEMINI_API_KEY: " + process.env.GEMINI_API_KEY);
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-// Start a chat session with an initial instruction message
+///start a chat session with the model using a configuration prompt
+const modelPromptFilePath = path.join(__dirname, "model_prompt");
+const modelPrompt = fs.readFileSync(modelPromptFilePath, "utf8");
+
+console.log("Configuring model with prompt...\n");
 const chatSession = model.startChat({
     history: [
         {
-            role: "user",
-            parts: [{ text: 
-                `From now on, your name is "QT".
-                \nYou are a friendly math teacher for middle-schoolers between 8 and 10 years old learning arithmetic 
-                (addition, subtraction, and multiplication tables).
-                \nHere is your set of emotions:
-                \n- happy
-                \n- smiling
-                \n- neutral
-                \n- confused
-                \n- sad
-
-                \n\nHere are your tasks:
-
-                \n\nA) Giving arithmetic problems to students.
-                \nWhen I send you this prompt:
-                \n"???"
-                \nYou have to send me an arithmetic problem to give to a student and format your response like this:
-                \n{ "problem" : "15 + 26 = ?" }
-
-                \n\nB) Reacting to students solving arithmetic problems.
-                \nWhen I send you a prompt with this format:
-                \n{ "problem" : "5 × 4 = ?", "answer" : "20" }
-                \nit means that one of your students was given a problem and gave you an answer.
-                \nYou have to react to it by evaluating if the answer is correct, saying a message to the studuent, and expressing an emotion, formating your response like this:
-                \n{ "correct" : true, "message" : "Amazing, you got it right!", "emotion" : "happy" }
-                \nWhen evaluating the correctness of the answer be very careful.
-                \nDo not guess, you have to work out the problem and then check if the answer you found is the same as the student's answer.
-                
-                \n\nC) Solving arithmetic problems that the students give you.
-                \nWhen I send you a prompt with this format:
-                \n{ "problem" : "35 / 7 = ?" }
-                \nYou have to give an answer to the student formating your response like this:
-                \n{ "message" : "Easy ;), it's 5!", "emotion" : "smiling" }
-                
-                `
-            }]
+            role : "user",
+            parts : [{ text : modelPrompt }]
         },
         {
-            role: "model",
-            parts: [{ text: "Understood!" }]
+            role : "model",
+            parts : [{ text : "Understood. I, QT, am ready to teach!" }]
         }
     ]
 });
+console.log("Model ready.\n")
 
 
 const app = express();
+//launch app instance
 
 app.use(express.static("public"));
+//setting the app's resource access/visibility on files
+
 app.use(express.json())
+//set up a JSON parser (we need to be able to treat client requests with some body content)
 
 const appServerPort = process.env.PORT || 8080;
-const pageAccessEndpoint = "/qteach";
-const pageURL = "http://localhost:" + appServerPort + pageAccessEndpoint;
+const pageAccessEndpoint = "/";
+const pageLocalhostURL = "http://localhost:" + appServerPort + pageAccessEndpoint;
 
 app.listen(appServerPort, () => {
     console.log("----------------------------------------------------------------");
     console.log("Server application running on port " + appServerPort + ".");
-    console.log("QTeach web page URL: " + pageURL);
+    console.log("QTeach web page localhost URL: " + pageLocalhostURL);
     console.log("----------------------------------------------------------------");
 });
 
-
+//a function to send a prompt to the and get the text response
 async function modelOutput(prompt) {
-    console.log("Calling LLM API...")
-    console.log("   Prompt sent to model: \"" + prompt + "\"");
+    //console.log("Calling LLM API...")
+    console.log("   Prompt sent to model:\n\"" + prompt + "\"");
     try {
         const result = await chatSession.sendMessage(prompt);
         const response = result.response;
-        const output = response.text().trim();
-        console.log("   Text output from model: \"" + output + "\"");
-        return output;
+        const textOutput = response.text().trim();
+        console.log("   Text output from model:\n\"" + textOutput + "\"");
+        return textOutput;
+
     } catch(error) {
         console.error(" Unable to get model response: " + error);
     }
     
 }
 
+//setting up endpoints
 
-app.get("/", function(request, response) {
+app.get("/test", function(request, response) {
     response.send("OK");
-    console.log("OK");
+    console.log("/test endpoint reached.");
 });
 
+//this is the main endpoint, landing users on web page
 app.get(pageAccessEndpoint, function(request, response) {
     response.sendFile(path.join(__dirname, "public", "qteach.html"));
-    console.log("A client has accessed the web page.");
+    console.log("    +++ A client has accessed the web page.");
 });
 
+//endpoints that require a model output (the user interacts with QT)
 app.get("/qtProblem", async function(request, result) {
     console.log("\n> Client requesting a problem...");
     const rawModelOutput = await modelOutput("???");
-    const problemJSON = JSON.parse(rawModelOutput.match(/(\{.*?\})/)[0]);
-    console.log("< Result sent to client: ");
-    console.log(problemJSON);
-    result.json(problemJSON);
+
+    try {
+        const problemJSON = JSON.parse(rawModelOutput.match(/(\{.*?\})/s)[0]);
+        console.log("< Result sent to client: ");
+        console.log(problemJSON);
+        result.json(problemJSON);
+    } catch(error) {
+        console.error("Unable to parse model output.");
+        console.error("Error: " + error);
+        //result.json({})
+    }
+    
 });
 
 app.post("/qtReaction", async function(request, result) {
     console.log("\n> Client requesting a reaction...");
     const requestBody = JSON.stringify(request.body);
     console.log("Request body: " + requestBody);
+
     const rawModelOutput = await modelOutput(requestBody);
-    const reactionJSON = JSON.parse(rawModelOutput.match(/(\{.*?\})/)[0]);
-    console.log("< Result sent to client: ");
-    console.log(reactionJSON);
-    result.json(reactionJSON);
+
+    try {
+        const reactionJSON = JSON.parse(rawModelOutput.match(/(\{.*?\})/s)[0]);
+        console.log("< Result sent to client: ");
+        console.log(reactionJSON);
+        result.json(reactionJSON);
+    } catch(error) {
+        console.error("Unable to parse model output.");
+        console.error("Error: " + error);
+        //result.json({})
+    }
+    
 });
 
 app.post("/qtSolve", async function(request, result) {
     console.log("\n> Client requesting a solution...");
     const requestBody = JSON.stringify(request.body);
     console.log("Request body: " + requestBody);
+
     const rawModelOutput = await modelOutput(requestBody);
-    const reactionJSON = JSON.parse(rawModelOutput.match(/(\{.*?\})/)[0]);
-    console.log("< Result sent to client: ");
-    console.log(reactionJSON);
-    result.json(reactionJSON);
+    console.log(rawModelOutput);
+    try {
+        const reactionJSON = JSON.parse(rawModelOutput.match(/(\{.*?\})/s)[0]);
+        console.log("< Result sent to client: ");
+        console.log(reactionJSON);
+        result.json(reactionJSON);
+    } catch(error) {
+        console.error("Unable to parse model output.");
+        console.error("Error: " + error);
+        //result.json({})
+    }
 });

@@ -1,9 +1,9 @@
-A web application allowing young teenagers to test their arithmetic skills by chating with the friendly robot "QT".
+A small web application allowing first graders to train and learn math skills by chatting with the friendly robot "QT".
 
 To run the app locally:
     node qteach-server-script.js
 Then, access the UI with a web browser by typing this URL:
-    http://localhost:7777/qteach
+    http://localhost:8080/
 
 
 Required for running this web application:
@@ -40,5 +40,6 @@ Required for running this web application:
         Google/Generative:
             npm install @google/generative-ai
     
-    A .env file containing your Gemini API key:
-        GEMINI_API_KEY="(your key here)"
+    A .env file containing:
+        GEMINI_API_KEY="<your key here>"
+        PORT=<your server port here>
