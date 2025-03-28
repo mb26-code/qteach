@@ -1,8 +1,11 @@
 A small web application allowing first graders to train and learn math skills by chatting with the friendly robot "QT".
 
-Version: 2.0
 Creators: Mehdi Bakhtar (mb26-code), Alain Le (AlainIco34), Oscar Jimenez-Flores
+Version: 2.0
+Deployment URL: https://qteach.onrender.com/
 
+
+----------------------------------
 To run the app locally, after cloning this repository:
     node qteach-server-script.js
 Then, access the web page with a browser by typing this URL:
