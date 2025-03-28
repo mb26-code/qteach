@@ -11,7 +11,9 @@ qtSay("Hello, I'm QT!\nLet's test your math skills!");
 let problem = undefined;
 //the problem given by the server model
 
-let askingMode = true;
+let switchAskingModeButton = document.getElementById("ask-mode-button");
+//for the user to switch the asking mode
+let askingModeQT = true;
 //boolean controling whether QT is the one who gives problem or the one who solve problems
 
 qtGiveProblem();
@@ -43,12 +45,33 @@ async function qtGiveProblem() {
 
         qtBe("talking");
         qtSay(problem);
-        const talkingDuration = problem.length * 200;
+        const talkingDuration = problem.length * 50;
         setTimeout(() => qtBe("neutral_blinking"), talkingDuration);
 
     } catch(error) {
 
         console.error("Couldn't fetch a problem: " + error);
+    }
+}
+
+async function switchAskingMode(event) {
+    if (askingModeQT) {
+        qtSay("Alright, let me solve your problems!🙂");
+        qtBe("talking");
+        setTimeout(() => qtBe("neutral_blinking"), 1500);
+        event.target.innerText = "Let QT give you problems!";
+        event.target.style.backgroundColor = "rgb(230, 212, 20)";
+        event.target.style.color = "black";
+        askingModeQT = false;
+    } else {
+        qtSay("It's my turn to test you now!");
+        qtBe("talking");
+        setTimeout(() => qtBe("neutral_blinking"), 1500);
+        qtGiveProblem();
+        event.target.innerText = "Give problems to QT!";
+        event.target.style.backgroundColor = "rgb(76, 175, 80)";
+        event.target.style.color = "white";
+        askingModeQT = true;
     }
 }
 
@@ -73,7 +96,7 @@ async function chatInputHandler(event) {
         chatHistory.insertBefore(userMessageRecord,chatHistory.firstChild);
         
         ///
-        if (askingMode) {
+        if (askingModeQT) {
             try {
                 const qtReactionResponse = await fetch("/qtReaction", {
                     method: "POST",
@@ -107,14 +130,17 @@ async function chatInputHandler(event) {
             const qtSolveResponse = await fetch("/qtSolve", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ problem: problem })
+                body: JSON.stringify({ problemToSolve: userMessage })
             });
             const qtSolveResult = await qtSolveResponse.json();
 
             qtBe("talking");
             qtSay(qtSolveResult.message);
-            setTimeout(() => qtBe(qtSolveResult.emotion), 2000);
-            setTimeout(() => qtBe("neutral_blinking"), 4000);
+            setTimeout(() => {
+                qtBe(qtSolveResult.emotion);
+                setTimeout(() => qtBe("neutral_blinking"), 1500);
+            }, qtSolveResult.message.length * 50);
+            
         }
     }
 }

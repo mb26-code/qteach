@@ -115,3 +115,16 @@ body{
     overflow-wrap: anywhere;
     
 }
+
+.rounded-button {
+    background-color: rgb(76, 175, 80);
+    color: white;
+    padding: 10px 20px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.3s;
+
+}
