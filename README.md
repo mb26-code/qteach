@@ -1,12 +1,15 @@
 A small web application allowing first graders to train and learn math skills by chatting with the friendly robot "QT".
 
-To run the app locally:
+Version: 2.0
+Creators: Mehdi Bakhtar (mb26-code), Alain Le (AlainIco34), Oscar Jimenez-Flores
+
+To run the app locally, after cloning this repository:
     node qteach-server-script.js
-Then, access the UI with a web browser by typing this URL:
+Then, access the web page with a browser by typing this URL:
     http://localhost:8080/
 
 
-Required for running this web application:
+Required for running this application:
     Node.js v18+:
         Check your node version with:
             node --version
