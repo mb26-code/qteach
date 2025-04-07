@@ -1,7 +1,9 @@
 # QTeach
 
+
 ## A small web application allowing first graders to train and learn math skills by chatting with the friendly robot "QT".
-Web deployment link: https://qteach.onrender.com/
+
+## Web deployment link: https://qteach.onrender.com/
 
 Creators: 
 - Mehdi Bakhtar (mb26-code)
@@ -60,8 +62,8 @@ Creators:
 8. Launch application server by typing `node qteach-server-script.js`
 
 9. This message should be displayed:
-    Server application running on port 8080.
-    QTeach web page localhost URL: http://localhost:8080/
+> Server application running on port 8080.
+QTeach web page localhost URL: http://localhost:8080/"
 
 10. Copy the link and access it using a web browser
   
