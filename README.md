@@ -1,7 +1,6 @@
 # QTeach
 
-
-## A small web application allowing first graders to train and learn math skills by chatting with the friendly robot "QT".
+A small web application allowing first graders to train and learn math skills by chatting with the friendly robot "QT".
 
 ## Web deployment link: https://qteach.onrender.com/
 
@@ -31,7 +30,7 @@ Creators:
 
 6. Verify necessary tools:
   - In terminal, type `node -v`
-   -> If there is a message saying that "node" is unknown, go to step 6.1
+   -> If there is a message saying that "node" is unknown, go to step 61.
    -> Else, go to step 7.
 
   - Then type `npm list express`
@@ -63,7 +62,7 @@ Creators:
 
 9. This message should be displayed:
 > Server application running on port 8080.
-QTeach web page localhost URL: http://localhost:8080/"
+> QTeach web page localhost URL: http://localhost:8080/"
 
 10. Copy the link and access it using a web browser
   
