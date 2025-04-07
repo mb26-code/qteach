@@ -1,12 +1,14 @@
 # QTeach
+
 ## A small web application allowing first graders to train and learn math skills by chatting with the friendly robot "QT".
+
+## Web deployment link: https://qteach.onrender.com/
 
 Creators: 
 - Mehdi Bakhtar (mb26-code)
 - Alain Le (AlainIco34)
 - Oscar Jimenez-Flores
 
-Web deployment link: https://qteach.onrender.com/
 
 ### Local installation guide (running the app on your machine)
 
@@ -35,7 +37,7 @@ Web deployment link: https://qteach.onrender.com/
    -> If "express" is unknown, go to step 6.1
    -> Else, go to step 7.
 
-6.1. Install dependencies:
+  6.1. Install dependencies:
   - Node.js:
     1. Go to: https://nodejs.org
     2. Download LTS version
@@ -75,5 +77,5 @@ Required for running this application:
   - Dotenv
   - Google/Generative-AI
 - A .env file containing:
-  - GEMINI_API_KEY="<your key here>"
-  - PORT=<your server port here>
+  - GEMINI_API_KEY="your key here"
+  - PORT=your server port here
