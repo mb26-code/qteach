@@ -30,12 +30,12 @@ Creators:
 
 6. Verify necessary tools:
   - In terminal, type `node -v`
-   -> If there is a message saying that "node" is unknown, go to step 61.
-   -> Else, go to step 7.
+    If there is a message saying that "node" is unknown, go to step 61.
+    Else, go to step 7.
 
   - Then type `npm list express`
-   -> If "express" is unknown, go to step 61.
-   -> Else, go to step 7.
+    If "express" is unknown, go to step 61.
+    Else, go to step 7.
 
 61. Install dependencies:
   - Node.js:
