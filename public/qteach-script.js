@@ -41,7 +41,7 @@ function qtSay(message) {
     const messageRecordElement = document.createElement("div");
 
     const messageAuthorElement = document.createElement("span");
-    messageAuthorElement.innerText = "\u2009\u00A0QT:";
+    messageAuthorElement.innerText = "QT:";
     messageRecordElement.appendChild(messageAuthorElement);
 
     const messageBodyElement = document.createElement("p");
@@ -130,6 +130,7 @@ async function chatInputHandler(event) {
         event.key === "Enter" && 
         !event.shiftKey && 
         /\S/.test(chatInputElement.value)) {
+        event.preventDefault();
         
         isChatInputLocked = true;
 
@@ -171,7 +172,7 @@ async function chatInputHandler(event) {
                 
                 //QT responds
                 qtBe(qtReactionResult.emotion);
-                await sleep(800);
+                await sleep(1000);
                 qtBe("talking");
                 qtSay(qtReactionResult.message);
                 await sleep(qtReactionResult.message.length * 50);
@@ -203,7 +204,7 @@ async function chatInputHandler(event) {
                 qtSay(qtSolveResult.message);
                 await sleep(qtSolveResult.message.length * 50);
                 qtBe(qtSolveResult.emotion);
-                await sleep(800);
+                await sleep(1000);
                 qtBe("neutral_blinking");
 
             } catch(error) {
@@ -213,4 +214,3 @@ async function chatInputHandler(event) {
         isChatInputLocked = false;
     } 
 }
-
