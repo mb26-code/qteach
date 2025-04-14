@@ -1,147 +1,216 @@
 
-let chatInput = document.getElementById("chat-input");
-let chatHistory = document.getElementById("chat-history");
+const chatInputElement = document.getElementById("chat-input");
+const chatHistoryElement = document.getElementById("chat-history");
 
-let qtFace = document.getElementById("qt-face");
+const qtFaceElement = document.getElementById("qt-face");
 //qtFace element (to change the emotion)
 
-qtBe("neutral_blinking")
+const modeSwitchButton = document.getElementById("mode-switch-button");
+let isModeSwitchButtonLocked = false;
+
+document.addEventListener("DOMContentLoaded", () => {
+    chatInputElement.addEventListener("keydown", chatInputHandler);
+    modeSwitchButton.addEventListener("click", switchAskingModeAsync);
+});
+
+
+//for the user to switch the asking mode
+let inQTAskingMode = true;
+//to control and check whether QT is the one who gives problem or the one who solves problems
+
+let isChatInputLocked = true;
+
+qtBe("neutral_blinking");
 qtSay("Hello, I'm QT!\nLet's test your math skills!");
 
-let problem = undefined;
-//the problem given by the server model
+let problemForUser = undefined;
+//the problem given by QT
 
-let switchAskingModeButton = document.getElementById("ask-mode-button");
-//for the user to switch the asking mode
-let askingModeQT = true;
-//boolean controling whether QT is the one who gives problem or the one who solve problems
+console.log("QT will be giving problems to the user");
 
-qtGiveProblem();
+(async () => {
+    isChatInputLocked = true;
+    await qtGiveProblemAsync();
+    isChatInputLocked = false;
+})();
 
-function qtSay(text) {
-    let messageRecord = document.createElement("div");
+////////////////////////////////////////////////////////////
 
-    let messageRecordAuthor = document.createElement("span");
-    messageRecordAuthor.innerText = "QT: ";
-    messageRecord.appendChild(messageRecordAuthor);
+//display a QT message on the page
+function qtSay(message) {
+    const messageRecordElement = document.createElement("div");
 
-    let messageRecordContent = document.createElement("p");
-    messageRecordContent.innerText = text;
-    messageRecord.appendChild(messageRecordContent);
+    const messageAuthorElement = document.createElement("span");
+    messageAuthorElement.innerText = "\u2009\u00A0QT:";
+    messageRecordElement.appendChild(messageAuthorElement);
 
-    chatHistory.insertBefore(messageRecord,chatHistory.firstChild);
-        
+    const messageBodyElement = document.createElement("p");
+    messageBodyElement.innerText = message;
+    messageRecordElement.appendChild(messageBodyElement);
+
+    chatHistoryElement.insertBefore(messageRecordElement, chatHistoryElement.firstChild);
 }
 
-async function qtBe(emotion) {
-    qtFace.style.content = "url(/qt_faces/" + emotion + ".gif)";
+//change QT emotion/expression
+function qtBe(emotion) {
+    qtFaceElement.style.content = "url(/qt_faces/" + emotion + ".gif)";
 }
 
-async function qtGiveProblem() {
+//a sleep function, use this to wait some time before executing the next line of code
+function sleep(durationInMilliseconds) {
+    return new Promise(resolve => setTimeout(resolve, durationInMilliseconds));
+}
+
+//fetch a new problem from the server and display it on the page
+async function qtGiveProblemAsync() {
     try {
+        console.log("Fetching QT problem...");
         const qtProblemResponse = await fetch("/qtProblem");
         const qtProblemResult = await qtProblemResponse.json();
-        problem = qtProblemResult.problem;
+        problemForUser = qtProblemResult.problem;
 
         qtBe("talking");
-        qtSay(problem);
-        const talkingDuration = problem.length * 50;
-        setTimeout(() => qtBe("neutral_blinking"), talkingDuration);
+        qtSay(problemForUser);
+
+        console.log("Problem given by QT: \"" + problemForUser + "\"");
+        
+        const talkingDurationMs = problemForUser.length * 50;
+        await sleep(talkingDurationMs);
+        qtBe("neutral_blinking");
 
     } catch(error) {
-
-        console.error("Couldn't fetch a problem: " + error);
+        console.error("Error while fetching QT problem: " + error);
     }
 }
 
-async function switchAskingMode(event) {
-    if (askingModeQT) {
-        qtSay("Alright, let me solve your problems!🙂");
-        qtBe("talking");
-        setTimeout(() => qtBe("neutral_blinking"), 1500);
-        event.target.innerText = "Let QT give you problems!";
-        event.target.style.backgroundColor = "rgb(230, 212, 20)";
-        event.target.style.color = "black";
-        askingModeQT = false;
-    } else {
-        qtSay("It's my turn to test you now!");
-        qtBe("talking");
-        setTimeout(() => qtBe("neutral_blinking"), 1500);
-        qtGiveProblem();
-        event.target.innerText = "Give problems to QT!";
-        event.target.style.backgroundColor = "rgb(76, 175, 80)";
-        event.target.style.color = "white";
-        askingModeQT = true;
+async function switchAskingModeAsync(event) {
+    if (!isModeSwitchButtonLocked) {
+        console.log("Switching asking mode");
+        isModeSwitchButtonLocked = true;
+
+        if (inQTAskingMode) {
+            console.log("QT will now solve the user's problems");
+
+            event.target.innerText = "Let QT give you problems!";
+            event.target.style.backgroundColor = "rgb(230, 212, 20)";
+            event.target.style.color = "black";
+
+            inQTAskingMode = false;
+            problemForUser = undefined;
+
+            qtBe("talking");
+            qtSay("Alright, I'll solve your problems now! 🙂");
+            await sleep(1500);
+            qtBe("neutral_blinking");
+            
+        } else {
+            console.log("QT will now give problems to the user");
+
+            event.target.innerText = "Give problems to QT!";
+            event.target.style.backgroundColor = "rgb(76, 175, 80)";
+            event.target.style.color = "white";
+
+            inQTAskingMode = true;
+
+            qtSay("It's my turn to test you now!");
+            qtBe("talking");
+            await sleep(1200);
+            qtBe("neutral_blinking");
+
+            qtGiveProblemAsync();
+        }
+
+        isModeSwitchButtonLocked = false;
     }
 }
 
 async function chatInputHandler(event) {
-    if (event.key === "Enter" && !event.shiftKey && /\S/.test(chatInput.value)) {
-        event.preventDefault();
 
-        let userMessage = chatInput.value.trim();
-        chatInput.value = "";
+    if (!isChatInputLocked && 
+        event.key === "Enter" && 
+        !event.shiftKey && 
+        /\S/.test(chatInputElement.value)) {
         
-        let userMessageRecord = document.createElement("div");
+        isChatInputLocked = true;
 
-        let userMessageRecordAuthor = document.createElement("span");
-        userMessageRecordAuthor.innerText = "You: ";
-        userMessageRecord.appendChild(userMessageRecordAuthor);
-
-        let userMessageRecordContent = document.createElement("p");
-        userMessageRecordContent.innerText = userMessage;
-        userMessageRecord.appendChild(userMessageRecordContent);
-
-        userMessageRecord.style.color = "rgb(29, 80, 211)";
-        chatHistory.insertBefore(userMessageRecord,chatHistory.firstChild);
+        let userMessage = chatInputElement.value.trim();
+        chatInputElement.value = "";
         
-        ///
-        if (askingModeQT) {
+        const userMessageRecordElement = document.createElement("div");
+        userMessageRecordElement.style.color = "rgb(29, 80, 211)";
+
+        const userMessageAuthorElement = document.createElement("span");
+        userMessageAuthorElement.innerText = "You:";
+        userMessageRecordElement.appendChild(userMessageAuthorElement);
+
+        const userMessageBodyElement = document.createElement("p");
+        userMessageBodyElement.innerText = userMessage;
+        userMessageRecordElement.appendChild(userMessageBodyElement);
+
+        chatHistoryElement.insertBefore(userMessageRecordElement, chatHistoryElement.firstChild);
+
+        if (inQTAskingMode) {
+            console.log(`User answer: "${userMessage}"`);
+
             try {
+                console.log("Fetching QT reaction...");
+
                 const qtReactionResponse = await fetch("/qtReaction", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ problem: problem, answer: userMessage })
+                    body: JSON.stringify({ problem: problemForUser, answer: userMessage })
                 });
                 const qtReactionResult = await qtReactionResponse.json();
 
-                if (qtReactionResult.correct) {
-                    userMessageRecord.style.color = "rgb(75, 187, 14)";
-                } else {
-                    userMessageRecord.style.color = "rgb(187, 23, 20)";
-                }
+                console.log("QT Reaction:", qtReactionResult);
+
+                //set user message color based on correctness
+                userMessageRecordElement.style.color = qtReactionResult.correct
+                    ? "rgb(75, 187, 14)"
+                    : "rgb(187, 23, 20)";
+                
+                //QT responds
                 qtBe(qtReactionResult.emotion);
-                setTimeout(() => { 
-                    qtBe("talking");
-                    qtSay(qtReactionResult.message);
-                    setTimeout(() => { 
-                        qtBe("neutral_blinking");
-                        if (qtReactionResult.correct || qtReactionResult.next) {
-                            setTimeout(qtGiveProblem, 1000);
-                        }
-                    }, qtReactionResult.message.length * 50);
-                }, 2000);
+                await sleep(800);
+                qtBe("talking");
+                qtSay(qtReactionResult.message);
+                await sleep(qtReactionResult.message.length * 50);
+                qtBe("neutral_blinking");
+
+                if (qtReactionResult.correct || qtReactionResult.next) {
+                    await sleep(1000);
+                    await qtGiveProblemAsync();
+                }
 
             } catch(error) {
-                console.log(error);
+                console.error("Error while fetching QT reaction:", error);
             }
 
         } else {
-            const qtSolveResponse = await fetch("/qtSolve", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ problemToSolve: userMessage })
-            });
-            const qtSolveResult = await qtSolveResponse.json();
+            try {
+                console.log("Fetching QT answer...");
 
-            qtBe("talking");
-            qtSay(qtSolveResult.message);
-            setTimeout(() => {
+                const qtSolveResponse = await fetch("/qtSolve", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ problemToSolve: userMessage })
+                });
+                const qtSolveResult = await qtSolveResponse.json();
+
+                console.log("QT answer:", qtSolveResult);
+
+                qtBe("talking");
+                qtSay(qtSolveResult.message);
+                await sleep(qtSolveResult.message.length * 50);
                 qtBe(qtSolveResult.emotion);
-                setTimeout(() => qtBe("neutral_blinking"), 1500);
-            }, qtSolveResult.message.length * 50);
-            
+                await sleep(800);
+                qtBe("neutral_blinking");
+
+            } catch(error) {
+                console.error("Error while fetching problem answer:", error);
+            }
         }
-    }
+        isChatInputLocked = false;
+    } 
 }
 
