@@ -84,7 +84,7 @@ body{
     color: rgb(255, 255, 255);
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     font-size: 1.2em;
-    background-color: rgb(117, 116, 116);
+    background-color: rgb(53, 70, 226);
     resize: none;
     width: 90%;
     aspect-ratio: 4;
@@ -127,5 +127,14 @@ body{
     border-radius: 20px;
     cursor: pointer;
     transition: background 0.3s;
+
+}
+
+#language-select {
+    color: rgb(233, 227, 227);
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: 1.2em;
+    background-color: rgba(105, 103, 103, 0.799);
+    margin-top: 10px;
 
 }

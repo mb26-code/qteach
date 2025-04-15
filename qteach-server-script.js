@@ -90,9 +90,11 @@ app.get(pageAccessEndpoint, function(request, response) {
 });
 
 //endpoints that require a model output (the user interacts with QT)
-app.get("/qtProblem", async function(request, result) {
+app.get("/qtProblem/:language", async function(request, result) {
     console.log("\n> Client requesting a problem...");
-    const rawModelOutput = await modelOutput("???");
+    const language = request.params.language || "en";
+
+    const rawModelOutput = await modelOutput("#" + language + " ???");
 
     try {
         const problemJSON = JSON.parse(rawModelOutput.match(/(\{.*?\})/s)[0]);
@@ -107,12 +109,13 @@ app.get("/qtProblem", async function(request, result) {
     
 });
 
-app.post("/qtReaction", async function(request, result) {
+app.post("/qtReaction/:language", async function(request, result) {
     console.log("\n> Client requesting a reaction...");
     const requestBody = JSON.stringify(request.body);
     console.log("Request body: " + requestBody);
+    const language = request.params.language || "en";
 
-    const rawModelOutput = await modelOutput(requestBody);
+    const rawModelOutput = await modelOutput("#" + language + " " + requestBody);
 
     try {
         const reactionJSON = JSON.parse(rawModelOutput.match(/(\{.*?\})/s)[0]);
@@ -127,12 +130,13 @@ app.post("/qtReaction", async function(request, result) {
     
 });
 
-app.post("/qtSolve", async function(request, result) {
+app.post("/qtSolve/:language", async function(request, result) {
     console.log("\n> Client requesting a solution...");
     const requestBody = JSON.stringify(request.body);
     console.log("Request body: " + requestBody);
+    const language = request.params.language || "en";
 
-    const rawModelOutput = await modelOutput(requestBody);
+    const rawModelOutput = await modelOutput("#" + language + " " + requestBody);
     console.log(rawModelOutput);
     try {
         const reactionJSON = JSON.parse(rawModelOutput.match(/(\{.*?\})/s)[0]);

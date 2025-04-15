@@ -1,4 +1,13 @@
 
+const defaultLanguage = localStorage.getItem("lang") || navigator.language.slice(0, 2) || "en";
+let langData = undefined;
+
+const supportedLanguages = ["en", "fr"];
+
+const languageSelectElement = document.getElementById("language-select");
+
+////////////////////////////////////////
+
 const chatInputElement = document.getElementById("chat-input");
 const chatHistoryElement = document.getElementById("chat-history");
 
@@ -8,31 +17,29 @@ const qtFaceElement = document.getElementById("qt-face");
 const modeSwitchButton = document.getElementById("mode-switch-button");
 let isModeSwitchButtonLocked = false;
 
-document.addEventListener("DOMContentLoaded", () => {
-    chatInputElement.addEventListener("keydown", chatInputHandler);
-    modeSwitchButton.addEventListener("click", switchAskingModeAsync);
-});
-
-
 //for the user to switch the asking mode
 let inQTAskingMode = true;
 //to control and check whether QT is the one who gives problem or the one who solves problems
 
 let isChatInputLocked = true;
 
-qtBe("neutral_blinking");
-qtSay("Hello, I'm QT!\nLet's test your math skills!");
-
 let problemForUser = undefined;
-//the problem given by QT
+//the problem given by QT to the user
+
+document.addEventListener("DOMContentLoaded", async () => {
+    await loadLanguageAsync(defaultLanguage);
+
+    // Event listeners
+
+    chatInputElement.addEventListener("keydown", chatInputHandler);
+    modeSwitchButton.addEventListener("click", switchAskingModeAsync);
+
+    languageSelectElement.addEventListener("change", (e) => {
+        loadLanguageAsync(e.target.value);
+    });
+});
 
 console.log("QT will be giving problems to the user");
-
-(async () => {
-    isChatInputLocked = true;
-    await qtGiveProblemAsync();
-    isChatInputLocked = false;
-})();
 
 ////////////////////////////////////////////////////////////
 
@@ -65,7 +72,7 @@ function sleep(durationInMilliseconds) {
 async function qtGiveProblemAsync() {
     try {
         console.log("Fetching QT problem...");
-        const qtProblemResponse = await fetch("/qtProblem");
+        const qtProblemResponse = await fetch("/qtProblem/" + langData["lang"]);
         const qtProblemResult = await qtProblemResponse.json();
         problemForUser = qtProblemResult.problem;
 
@@ -91,7 +98,8 @@ async function switchAskingModeAsync(event) {
         if (inQTAskingMode) {
             console.log("QT will now solve the user's problems");
 
-            event.target.innerText = "Let QT give you problems!";
+            event.target.innerText = langData["modeSwitchButtonTextUserAskingMode"];
+            event.target.dataset.i18n = "modeSwitchButtonTextUserAskingMode";
             event.target.style.backgroundColor = "rgb(230, 212, 20)";
             event.target.style.color = "black";
 
@@ -99,20 +107,21 @@ async function switchAskingModeAsync(event) {
             problemForUser = undefined;
 
             qtBe("talking");
-            qtSay("Alright, I'll solve your problems now! 🙂");
-            await sleep(1500);
+            qtSay(langData["messageUserAskingMode"]);
+            await sleep(1200);
             qtBe("neutral_blinking");
             
         } else {
             console.log("QT will now give problems to the user");
 
-            event.target.innerText = "Give problems to QT!";
+            event.target.innerText = langData["modeSwitchButtonTextQTAskingMode"];
+            event.target.dataset.i18n = "modeSwitchButtonTextQTAskingMode";
             event.target.style.backgroundColor = "rgb(76, 175, 80)";
             event.target.style.color = "white";
 
             inQTAskingMode = true;
 
-            qtSay("It's my turn to test you now!");
+            qtSay(langData["messageQTAskingMode"]);
             qtBe("talking");
             await sleep(1200);
             qtBe("neutral_blinking");
@@ -138,10 +147,11 @@ async function chatInputHandler(event) {
         chatInputElement.value = "";
         
         const userMessageRecordElement = document.createElement("div");
-        userMessageRecordElement.style.color = "rgb(29, 80, 211)";
+        userMessageRecordElement.style.color = "rgb(0, 0, 0)";
 
         const userMessageAuthorElement = document.createElement("span");
-        userMessageAuthorElement.innerText = "You:";
+        userMessageAuthorElement.innerText = langData["userPronounInChatHistory"] + ":";
+        userMessageAuthorElement.dataset.i18n = "userPronounInChatHistory";
         userMessageRecordElement.appendChild(userMessageAuthorElement);
 
         const userMessageBodyElement = document.createElement("p");
@@ -156,7 +166,7 @@ async function chatInputHandler(event) {
             try {
                 console.log("Fetching QT reaction...");
 
-                const qtReactionResponse = await fetch("/qtReaction", {
+                const qtReactionResponse = await fetch("/qtReaction/" + langData["lang"], {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ problem: problemForUser, answer: userMessage })
@@ -167,7 +177,7 @@ async function chatInputHandler(event) {
 
                 //set user message color based on correctness
                 userMessageRecordElement.style.color = qtReactionResult.correct
-                    ? "rgb(75, 187, 14)"
+                    ? "rgb(9, 169, 35)"
                     : "rgb(187, 23, 20)";
                 
                 //QT responds
@@ -191,7 +201,7 @@ async function chatInputHandler(event) {
             try {
                 console.log("Fetching QT answer...");
 
-                const qtSolveResponse = await fetch("/qtSolve", {
+                const qtSolveResponse = await fetch("/qtSolve/" + langData["lang"], {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ problemToSolve: userMessage })
@@ -213,4 +223,62 @@ async function chatInputHandler(event) {
         }
         isChatInputLocked = false;
     } 
+}
+
+
+async function loadLanguageAsync(lang) {
+    console.log("Changing language to " + lang);
+    if (!supportedLanguages.includes(lang)) {
+        lang = "en";
+    }
+
+    try {
+        const langResponse = await fetch("/lang/" + lang + ".json");
+        langData = await langResponse.json();
+
+        document.querySelectorAll("[data-i18n]").forEach((el) => {
+            const key = el.getAttribute("data-i18n");
+            if (langData[key]) {
+                el.textContent = langData[key];
+            }
+        });
+
+        localStorage.setItem("lang", lang);
+        languageSelectElement.value = lang;
+        document.documentElement.lang = lang;
+
+        ////////
+        clearChatHistory();
+
+        ////////
+        if (inQTAskingMode) {
+            console.log("QT will now be giving problems to the user in " + lang);
+
+            qtBe("talking");
+            qtSay(langData["messageQTAskingMode"]);
+            await sleep(1500);
+            qtBe("neutral_blinking");
+
+            isChatInputLocked = true;
+            await qtGiveProblemAsync();
+            isChatInputLocked = false;
+
+        } else {
+            console.log("QT will now be solving the user's problems in " + lang);
+
+            qtBe("talking");
+            qtSay(langData["messageQTAskingMode"]);
+            await sleep(1500);
+            qtBe("neutral_blinking");
+            
+        }
+    } catch (error) {
+        console.error(`Error loading language file for '${lang}':`, error);
+    }
+}
+
+function clearChatHistory() {
+    while (chatHistoryElement.firstChild) {
+        chatHistoryElement.removeChild(chatHistoryElement.firstChild);
+    }
 }

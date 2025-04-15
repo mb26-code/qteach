@@ -1,0 +1,14 @@
+{
+    "lang": "en",
+    
+    "qtGreeting": "Hello, I'm QT!\nLet's test your math skills!",
+    "chatInputPlaceholder": "Talk to QT...",
+    "userPronounInChatHistory": "Me",
+
+    "messageQTAskingMode": "Let's test your math skills!",
+    "modeSwitchButtonTextQTAskingMode": "Give problems to QT!",
+
+    "messageUserAskingMode": "Alright, I'll solve your problems now! 🙂",
+    "modeSwitchButtonTextUserAskingMode": "Solve QT's problems!"
+    
+}
