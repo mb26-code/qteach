@@ -2,7 +2,7 @@
 
 A small web application allowing first graders to train and learn math skills by chatting with the friendly robot QT.
 
-## Web deployment link: https://qteach.onrender.com/
+## Web deployment links: https://www.qteach.app/ and https://qteach.onrender.com/
 
 Creators: 
 - Mehdi Bakhtar (mb26-code)
