@@ -1,0 +1,10 @@
+{
+    "lang": "ar",
+    "qtGreeting": "مرحبًا، أنا QT!\nهيا نختبر مهاراتك في الرياضيات!",
+    "chatInputPlaceholder": "تحدث إلى QT...",
+    "userPronounInChatHistory": "أنا",
+    "messageQTAskingMode": "لنختبر مهاراتك في الرياضيات!",
+    "modeSwitchButtonTextQTAskingMode": "اعطِ QT مسائل!",
+    "messageUserAskingMode": "حسنًا، سأحل مشاكلك الآن! 🙂",
+    "modeSwitchButtonTextUserAskingMode": "حل مسائل QT!"
+}

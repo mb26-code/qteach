@@ -1,0 +1,10 @@
+{
+    "lang": "vi",
+    "qtGreeting": "Xin chào, mình là QT!\nCùng luyện kỹ năng toán nào!",
+    "chatInputPlaceholder": "Nói chuyện với QT...",
+    "userPronounInChatHistory": "Tôi",
+    "messageQTAskingMode": "Hãy kiểm tra kỹ năng toán học của bạn!",
+    "modeSwitchButtonTextQTAskingMode": "Giao bài toán cho QT!",
+    "messageUserAskingMode": "Được rồi, mình sẽ giải các bài toán của bạn! 🙂",
+    "modeSwitchButtonTextUserAskingMode": "Giải bài toán của QT!"
+}

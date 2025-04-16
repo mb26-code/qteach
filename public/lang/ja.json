@@ -1,0 +1,10 @@
+{
+    "lang": "ja",
+    "qtGreeting": "こんにちは、QTです！\n一緒に数学を練習しましょう！",
+    "chatInputPlaceholder": "QTと話す...",
+    "userPronounInChatHistory": "私",
+    "messageQTAskingMode": "あなたの数学スキルを試してみましょう！",
+    "modeSwitchButtonTextQTAskingMode": "QTに問題を出して！",
+    "messageUserAskingMode": "わかりました、あなたの問題を解きますね！🙂",
+    "modeSwitchButtonTextUserAskingMode": "QTの問題を解く！"
+}

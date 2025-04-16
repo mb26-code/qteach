@@ -2,9 +2,25 @@
 const defaultLanguage = localStorage.getItem("lang") || navigator.language.slice(0, 2) || "en";
 let langData = undefined;
 
-const supportedLanguages = ["en", "fr"];
+const supportedLanguages = {
+    en: { label: "English", flag: "🇺🇸" },
+    fr: { label: "Français", flag: "🇫🇷" },
+    es: { label: "Español", flag: "🇪🇸" },
+    vi: { label: "Tiếng Việt", flag: "🇻🇳" },
+    ja: { label: "日本語", flag: "🇯🇵" },
+    de: { label: "Deutsch", flag: "🇩🇪" },
+    ar: { label: "العربية", flag: "🇸🇦" },
+    it: { label: "Italiano", flag: "🇮🇹" }
+};
 
 const languageSelectElement = document.getElementById("language-select");
+
+for (const [code, { label, flag }] of Object.entries(supportedLanguages)) {
+    const option = document.createElement("option");
+    option.value = code;
+    option.textContent = `${flag} ${label}`;
+    languageSelectElement.appendChild(option);
+}
 
 ////////////////////////////////////////
 
@@ -177,7 +193,7 @@ async function chatInputHandler(event) {
 
                 //set user message color based on correctness
                 userMessageRecordElement.style.color = qtReactionResult.correct
-                    ? "rgb(9, 169, 35)"
+                    ? "rgb(25, 215, 57)"
                     : "rgb(187, 23, 20)";
                 
                 //QT responds
@@ -228,7 +244,7 @@ async function chatInputHandler(event) {
 
 async function loadLanguageAsync(lang) {
     console.log("Changing language to " + lang);
-    if (!supportedLanguages.includes(lang)) {
+    if (!(lang in supportedLanguages)) {
         lang = "en";
     }
 
