@@ -1,8 +1,10 @@
 # QTeach
 
-A small web application allowing first graders to train and learn math skills by chatting with the friendly robot QT.
+A small web application allowing first graders to train and learn math skills by chatting with the friendly robot QT in multiple languages!
 
 ## Web deployment links: https://www.qteach.app/ and https://qteach.onrender.com/
+
+Latest version: 3.1.0
 
 Creators: 
 - Mehdi Bakhtar (mb26-code)

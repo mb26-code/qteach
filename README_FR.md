@@ -1,8 +1,10 @@
 # QTeach
 
-Une petite application web permettant aux élèves de CP de s'entraîner et d'apprendre les bases des mathématiques en discutant avec le sympathique robot QT.
+Une petite application web permettant aux élèves de CP de s'entraîner et d'apprendre les bases des mathématiques en discutant avec le sympathique robot QT dans plusieurs langues!
 
-## Lien vers l'application en ligne: [https://qteach.onrender.com/](https://qteach.onrender.com/)
+## Lien vers l'application en ligne: https://www.qteach.app/ et https://qteach.onrender.com/
+
+Dernière version: 3.1.0
 
 Créateurs:
 - Mehdi Bakhtar (mb26-code)  
