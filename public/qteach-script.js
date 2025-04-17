@@ -25,6 +25,17 @@ for (const [code, { label, flag }] of Object.entries(supportedLanguages)) {
 ////////////////////////////////////////
 
 const chatInputElement = document.getElementById("chat-input");
+
+const submitButtonElement = document.getElementById("submit-button");
+
+submitButtonElement.addEventListener("click", () => {
+    const enterKeyEvent = new KeyboardEvent("keydown", {
+        key: "Enter",
+        shiftKey: false
+    });
+    chatInputElement.dispatchEvent(enterKeyEvent);
+});
+
 const chatHistoryElement = document.getElementById("chat-history");
 
 const qtFaceElement = document.getElementById("qt-face");
@@ -263,10 +274,10 @@ async function loadLanguageAsync(lang) {
         languageSelectElement.value = lang;
         document.documentElement.lang = lang;
 
-        ////////
+        chatInputElement.placeholder = langData["chatInputPlaceholder"];
+
         clearChatHistory();
 
-        ////////
         if (inQTAskingMode) {
             console.log("QT will now be giving problems to the user in " + lang);
 
