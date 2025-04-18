@@ -1,6 +1,28 @@
 # QTeach
 
-A small web application allowing first graders to train and learn math skills by chatting with the friendly robot QT in multiple languages!
+> _Practice math through conversation — with QT, your multilingual robot tutor._
+
+**QTeach** is a small web application that helps first graders practice and build their math skills by chatting with a friendly robot named QT — available in multiple languages!
+
+## 🧩 Features
+
+- 🧠 **Challenge Mode** — QT gives the user math problems to solve  
+- 💬 **Ask Mode** — The user can ask QT any math-related question
+
+## 🌍 Multilingual Support
+
+QT speaks multiple languages! The interface and interaction adapt based on the selected language to make learning more inclusive.
+
+## 💻 Access
+
+- Works on **any modern browser** (desktop preferred)
+- Requires an **internet connection**
+- No installation needed — just open and start chatting!
+
+## ⚙️ Tech
+
+- Built with HTML, CSS, and JavaScript
+- Powered by the **Gemini** LLM for intelligent responses
 
 ## Web deployment links: https://www.qteach.app/ and https://qteach.onrender.com/
 
@@ -12,7 +34,8 @@ Creators:
 - Oscar Jimenez-Flores
 
 
-### Local installation guide (running the app on your machine)
+
+### Local installation guide (host the app on your machine)
 
 1. Access this URL: https://github.com/mb26-code/qteach
 

@@ -1,18 +1,41 @@
 # QTeach
 
-Une petite application web permettant aux élèves de CP de s'entraîner et d'apprendre les bases des mathématiques en discutant avec le sympathique robot QT dans plusieurs langues!
+> _Pratique les maths en discutant — avec QT, ton robot tuteur multilingue._
+
+**QTeach** est une petite application web qui aide les élèves de CP à s'entraîner et à renforcer leurs compétences en mathématiques en discutant avec un robot sympathique nommé QT — disponible en plusieurs langues !
+
+## 🧩 Fonctionnalités
+
+- 🧠 **Mode Défi** — QT pose des problèmes de maths à l’utilisateur  
+- 💬 **Mode Question** — L’utilisateur peut poser n’importe quelle question liée aux mathématiques
+
+## 🌍 Support multilingue
+
+QT parle plusieurs langues ! L’interface et les interactions s’adaptent selon la langue sélectionnée pour rendre l’apprentissage accessible à tous.
+
+## 💻 Accès
+
+- Fonctionne sur **tout navigateur moderne** (idéalement sur ordinateur)
+- Nécessite une **connexion internet**
+- Aucune installation requise — il suffit d’ouvrir l’application et de commencer à discuter !
+
+## ⚙️ Technologies
+
+- Construit avec HTML, CSS et JavaScript
+- Propulsé par le LLM **Gemini** pour des réponses intelligentes
 
 ## Lien vers l'application en ligne: https://www.qteach.app/ et https://qteach.onrender.com/
 
 Dernière version: 3.1.0
 
 Créateurs:
-- Mehdi Bakhtar (mb26-code)  
-- Alain Le (AlainIco34)  
-- Oscar Jimenez-Flores  
+- Mehdi Bakhtar (mb26-code)
+- Alain Le (AlainIco34)
+- Oscar Jimenez-Flores
 
 
-### Guide d'installation locale (exécuter l'application sur votre machine)
+
+### Guide d'installation locale (héberger l'application sur votre machine)
 
 1. Accédez à cette URL: [https://github.com/mb26-code/qteach](https://github.com/mb26-code/qteach)
 
