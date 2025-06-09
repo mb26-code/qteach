@@ -24,7 +24,9 @@ QT parle plusieurs langues ! L’interface et les interactions s’adaptent selo
 - Construit avec HTML, CSS et JavaScript
 - Propulsé par le LLM **Gemini** pour des réponses intelligentes
 
-## Lien vers l'application en ligne: https://www.qteach.app/ et https://qteach.onrender.com/
+## Lien(s) vers l'application en ligne: 
+## https://www.qteach.app/ (ne fonctionnera plus à partir du 15/04/2026)
+## https://qteach.onrender.com/
 
 Dernière version: 3.1.0
 

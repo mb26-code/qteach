@@ -24,7 +24,9 @@ QT speaks multiple languages! The interface and interaction adapt based on the s
 - Built with HTML, CSS, and JavaScript
 - Powered by the **Gemini** LLM for intelligent responses
 
-## Web deployment links: https://www.qteach.app/ and https://qteach.onrender.com/
+## Web deployment link(s): 
+## https://www.qteach.app/ (won't work after 15/04/2026)
+## https://qteach.onrender.com/
 
 Latest version: 3.1.0
 
