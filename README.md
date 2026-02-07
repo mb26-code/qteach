@@ -33,7 +33,7 @@ Latest version: 3.1.0
 Creators: 
 - Mehdi Bakhtar (mb26-code)
 - Alain Le (AlainIco34)
-- Oscar Jimenez-Flores
+- Oscar Jimenez-Flores (OskrJF)
 
 
 
