@@ -25,8 +25,9 @@ QT speaks multiple languages! The interface and interaction adapt based on the s
 - Powered by the **Gemini** LLM for intelligent responses
 
 ## Web deployment link(s): 
-## https://www.qteach.app/ (won't work after 15/04/2026)
+## https://www.qteach.app/
 ## https://qteach.onrender.com/
+(the app is currently broken and won't be accessible at those URLs after 15/04/2026 or sooner, I'm considering hosting it on my own server and at another personal domain name)
 
 Latest version: 3.1.0
 
