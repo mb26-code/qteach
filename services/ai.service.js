@@ -25,7 +25,7 @@ const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
 ///start a chat session with the model using a configuration prompt
 // Adjusted path since we are now inside /services
-const modelPromptFilePath = path.join(__dirname, "..", "model_prompt");
+const modelPromptFilePath = path.join(__dirname, "..", "model_prompt.txt");
 const modelPrompt = fs.readFileSync(modelPromptFilePath, "utf8");
 
 console.log("Configuring model with prompt...\n");
