@@ -13,22 +13,32 @@ exports.getHome = function(request, response) {
     console.log("    +++ A client has accessed the web page.");
 };
 
+// Helper function to safely parse model output
+const handleModelResponse = (rawModelOutput, result) => {
+    if (!rawModelOutput) {
+        return result.status(500).json({ error: "AI Model failed to respond." });
+    }
+
+    try {
+        // Attempt to extract JSON from the text
+        const match = rawModelOutput.match(/(\{.*?\})/s);
+        if (!match) throw new Error("No JSON found in response");
+        
+        const problemJSON = JSON.parse(match[0]);
+        console.log("< Result sent to client: ", problemJSON);
+        result.json(problemJSON);
+    } catch(error) {
+        console.error("Unable to parse model output:", error.message);
+        // Fallback or error response
+        result.status(500).json({ error: "Failed to parse AI response." });
+    }
+};
+
 exports.getProblem = async function(request, result) {
     console.log("\n> Client requesting a problem...");
     const language = request.params.language || "en";
-
     const rawModelOutput = await aiService.modelOutput("#" + language + " ???");
-
-    try {
-        const problemJSON = JSON.parse(rawModelOutput.match(/(\{.*?\})/s)[0]);
-        console.log("< Result sent to client: ");
-        console.log(problemJSON);
-        result.json(problemJSON);
-    } catch(error) {
-        console.error("Unable to parse model output.");
-        console.error("Error: " + error);
-        //result.json({})
-    }
+    handleModelResponse(rawModelOutput, result);
 };
 
 exports.postReaction = async function(request, result) {
@@ -36,19 +46,8 @@ exports.postReaction = async function(request, result) {
     const requestBody = JSON.stringify(request.body);
     console.log("Request body: " + requestBody);
     const language = request.params.language || "en";
-
     const rawModelOutput = await aiService.modelOutput("#" + language + " " + requestBody);
-
-    try {
-        const reactionJSON = JSON.parse(rawModelOutput.match(/(\{.*?\})/s)[0]);
-        console.log("< Result sent to client: ");
-        console.log(reactionJSON);
-        result.json(reactionJSON);
-    } catch(error) {
-        console.error("Unable to parse model output.");
-        console.error("Error: " + error);
-        //result.json({})
-    }
+    handleModelResponse(rawModelOutput, result);
 };
 
 exports.postSolve = async function(request, result) {
@@ -56,18 +55,7 @@ exports.postSolve = async function(request, result) {
     const requestBody = JSON.stringify(request.body);
     console.log("Request body: " + requestBody);
     const language = request.params.language || "en";
-
     const rawModelOutput = await aiService.modelOutput("#" + language + " " + requestBody);
-    console.log(rawModelOutput);
-    try {
-        const reactionJSON = JSON.parse(rawModelOutput.match(/(\{.*?\})/s)[0]);
-        console.log("< Result sent to client: ");
-        console.log(reactionJSON);
-        result.json(reactionJSON);
-    } catch(error) {
-        console.error("Unable to parse model output.");
-        console.error("Error: " + error);
-        //result.json({})
-    }
+    handleModelResponse(rawModelOutput, result);
 };
 

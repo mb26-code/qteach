@@ -21,7 +21,7 @@ if (process.env.GEMINI_API_KEY) {
 }
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-001" });
+const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
 ///start a chat session with the model using a configuration prompt
 // Adjusted path since we are now inside /services
