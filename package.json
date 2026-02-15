@@ -12,7 +12,7 @@
     "url": "git+https://github.com/mb26-code/qteach.git"
   },
   "author": "Mehdi Bakhtar, Alain Le, Oscar Jimenez-Flores",
-  "license": "ISC",
+  "license": "GPL-3.0-only",
   "bugs": {
     "url": "https://github.com/mb26-code/qteach/issues"
   },
