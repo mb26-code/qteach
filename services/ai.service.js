@@ -7,55 +7,61 @@ const path = require("path");
 require('dotenv').config();
 //for .env access
 
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const { GoogleGenAI } = require("@google/genai");
 //for LLM AI agent feature
 
-//checking if .env is working properly
-//console.log("GEMINI_API_KEY: " + process.env.GEMINI_API_KEY);
 
-//check if key is loaded (prints first 4 chars only)
+
+//check if key is loaded
 if (process.env.GEMINI_API_KEY) {
-    console.log(`[System] API Key loaded: ${process.env.GEMINI_API_KEY.substring(0, 4)}...`);
+    console.log(`Gemini API key loaded: "${process.env.GEMINI_API_KEY.substring(0, 12)}..."`);
 } else {
-    console.error("[System] ERROR: GEMINI_API_KEY is missing from .env");
+    console.error("ERROR: GEMINI_API_KEY is missing from environment variables (.env).");
 }
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+const ai = new GoogleGenAI({});
 
-///start a chat session with the model using a configuration prompt
-// Adjusted path since we are now inside /services
-const modelPromptFilePath = path.join(__dirname, "..", "model_prompt.txt");
+///start a chat session with the model using a configuration prompt/instructions
+const modelPromptFilePath = path.join(__dirname, "..", process.env.MODEL_INSTRUCTIONS);
 const modelPrompt = fs.readFileSync(modelPromptFilePath, "utf8");
 
-console.log("Configuring model with prompt...\n");
-const chatSession = model.startChat({
+console.log("Configuring model with prompt:");
+console.log(`   Gemini model loaded: "${process.env.GEMINI_MODEL}"`);
+console.log(`   Model instructions used: "${process.env.MODEL_INSTRUCTIONS}"`);
+
+console.log(`   ...`);
+const chatSession = ai.chats.create({
+    model: process.env.GEMINI_MODEL || "gemini-3-flash-preview",
     history: [
         {
-            role : "user",
-            parts : [{ text : modelPrompt }]
+            role: "user",
+            parts: [{ text: modelPrompt }]
         },
         {
-            role : "model",
-            parts : [{ text : "Understood. I, QT, am ready to teach!" }]
+            role: "model",
+            parts: [{ text: "Understood. I, QT, am ready to teach!" }]
         }
     ]
 });
-console.log("Model ready.\n")
+console.log("Model ready.\n");
 
 //a function to send a prompt to the and get the text response
 async function modelOutput(prompt) {
     //console.log("Calling LLM API...")
-    console.log("   Prompt sent to model:\n\"" + prompt + "\"");
+
+    if (process.env.PROMPT_LOGS == "true") {
+        console.log("   Prompt to model:\n\"" + prompt + "\"");
+    }
     try {
-        const result = await chatSession.sendMessage(prompt);
-        const response = result.response;
-        const textOutput = response.text().trim();
-        console.log("   Text output from model:\n\"" + textOutput + "\"");
+        const response = await chatSession.sendMessage({ message: prompt });
+        const textOutput = response.text.trim();
+        if (process.env.PROMPT_LOGS == "true") {
+            console.log("   Text output response from model:\n\"" + textOutput + "\"");
+        }
         return textOutput;
 
     } catch(error) {
-        console.error(" Unable to get model response: " + error.message);
+        console.error("ERROR: Unable to get model response.\n" + error.message);
         return null;
         //return null explicitly on failure
     }
