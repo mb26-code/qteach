@@ -22,28 +22,23 @@ if (process.env.GEMINI_API_KEY) {
 const ai = new GoogleGenAI({});
 
 ///start a chat session with the model using a configuration prompt/instructions
-const modelPromptFilePath = path.join(__dirname, "..", process.env.MODEL_INSTRUCTIONS);
-const modelPrompt = fs.readFileSync(modelPromptFilePath, "utf8");
+const modelInstructionsFilePath = path.join(__dirname, "..", process.env.MODEL_INSTRUCTIONS);
+const modelInstructions = fs.readFileSync(modelInstructionsFilePath, "utf8");
 
-console.log("Configuring model with prompt:");
-console.log(`   Gemini model loaded: "${process.env.GEMINI_MODEL}"`);
-console.log(`   Model instructions used: "${process.env.MODEL_INSTRUCTIONS}"`);
+console.log("Loading Gemini model:");
+console.log(`   Name: "${process.env.GEMINI_MODEL}"`);
+console.log(`   Instructions: "${process.env.MODEL_INSTRUCTIONS}"`);
 
 console.log(`   ...`);
 const chatSession = ai.chats.create({
     model: process.env.GEMINI_MODEL || "gemini-3-flash-preview",
-    history: [
-        {
-            role: "user",
-            parts: [{ text: modelPrompt }]
-        },
-        {
-            role: "model",
-            parts: [{ text: "Understood. I, QT, am ready to teach!" }]
-        }
-    ]
+    config: {
+        systemInstruction: modelInstructions,
+        //lowering the temperature makes the model more deterministic and less likely to get creative/swayed by bad prompts
+        temperature: 0.3 
+    }
 });
-console.log("Model ready.\n");
+console.log("QT model ready.\n");
 
 //a function to send a prompt to the and get the text response
 async function modelOutput(prompt) {
